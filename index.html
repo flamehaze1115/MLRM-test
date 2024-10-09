@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Paper title">
+  <meta name="keywords" content="Nerfies, D-NeRF, NeRF">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-site-verification" content="-yK1moPji_VMO8wwzUVjcYzNmJNVJiHNJPdFBGSvCC4" />
+  <title>M-LRM: Large Multi-view Reconstruction Model</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.13.0/dist/katex.min.js"></script>
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+      </a>
+
+      <!-- <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          More Research
+        </a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="https://hypernerf.github.io">
+            HyperNeRF
+          </a>
+        </div> -->
+      </div> 
+    </div>
+
+  </div>
+</nav>
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">M-LRM: Multi-view Large Reconstruction Model</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              Mengfei Li<sup>1</sup>,</span>
+            </span>
+            <span class="author-block">
+              <a href="https://www.xxlong.site/">Xiaoxiao Long</a><sup>1&dagger;</sup>,</span>
+            </span>
+            <span class="author-block">
+              <a href="https://yixunliang.github.io/">Yixun Liang</a><sup>3</sup>,</span>
+            </span>
+            <span class="author-block">
+              <a href="https://weiyuli.xyz/">Weiyu Li</a><sup>1</sup>,</span>
+            </span>
+            <span class="author-block">
+              <a href="https://liuyuan-pal.github.io/">Yuan Liu</a><sup>2</sup>,</span>
+            </span>
+            <span class="author-block">
+              Peng Li<sup>1</sup>,</span>
+            </span>
+            <span class="author-block">
+              Xiaowei Chi<sup>1</sup>,</span>
+            </span>
+            <span class="author-block">
+              Xingqun Qi<sup>1</sup>,</span>
+            </span>
+            <br>
+            <span class="author-block">
+              <a href="http://wei-xue.com/index.htm">Wei Xue</a><sup>1</sup>,</span>
+            </span>
+            <span class="author-block">
+              <a href="https://clinplayer.github.io/">Wenhan Luo</a><sup>1</sup>,</span>
+            </span>
+            <span class="author-block">
+              Qifeng Liu<sup>1&dagger;</sup>,</span>
+            </span>
+            <span class="author-block">
+             <a href="https://cse.hkust.edu.hk/admin/people/faculty/profile/yikeguo">Yike Guo</a><sup>1</sup></span>
+            </span>
+          </div>
+          <br>
+          <!-- <sup>*</sup>The first two authors contribute equally. &nbsp;&nbsp; -->
+          <sup>&dagger;</sup>Corresponding authors. &nbsp;&nbsp;
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>HKUST,</span>
+            <span class="author-block"><sup>2</sup>HKU,</span>
+            <span class="author-block"><sup>3</sup>HKUST(GZ)</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2406.07648"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arxiv</span>
+                </a>
+              </span>
+              
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/murphylmf/M-LRM"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Teaser video. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-full-width">
+        <div class="column">
+          <img src="static/images/teaser_v2.jpg" alt="teaser" style="width:100%">
+          <!-- <div style="display: flex; align-items: center; justify-content: center; gap: 180px;">
+            <p>Input</p>
+            <p>Generated multiview image and normal maps</p>
+            <p>Mesh</p>
+          </div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Despite recent advancements in the Large Reconstruction Model (LRM) demonstrating impressive results, when extending its input from single image to multiple images, it exhibits inefficiencies, subpar geometric and texture quality, as well as slower convergence speed than expected.  
+            It is attributed to that, LRM formulates 3D reconstruction as a naive images-to-3D translation problem, ignoring the strong 3D coherence among the input images.  In this paper, we propose a Multi-view Large Reconstruction Model (M-LRM) designed to efficiently reconstruct high-quality 3D shapes from multi-views in a 3D-aware manner. Specifically, we introduce a multi-view consistent cross-attention scheme to enable M-LRM to accurately query information from the input images. Moreover, we employ the 3D priors of the input multi-view images to initialize the tri-plane tokens. Compared to LRM, the proposed M-LRM can produce a tri-plane NeRF with 128 * 128 resolution and generate 3D shapes of high fidelity. Experimental studies demonstrate that our model achieves a significant performance gain and faster training convergence than LRM.
+          </p><br>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--/ Abstract. -->
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-full-width">
+        <div class="column">
+          <img src="static/images/pipeline.jpg" alt="pipeline" style="width:100%">
+        </div>
+      </div>
+    </div>
+    <p><b>Pipeline.</b> Overview of M-LRM. M-LRM is a fully differentiable transformer-based framework, featuring a feature encoder, geometry-aware position encoding and a multi-view cross attention block. Given multi-view images with corresponding camera poses, M-LRM incorporates the 2D and 3D features to efficiently conduct 3D-aware multi-view attention. The proposed geometry-aware position encoding allows more detailed and realistic 3D generation..</p>
+  </div>
+  <!-- <div class="container is-max-desktop" style="margin-top: 2rem; margin-bottom: 2rem;">
+  <div class="columns is-centered has-text-centered">
+    <div class="columns is-1 is-multiline is-mobile">
+      <div class="column pt-0 mt-0 pb-0 mb-0 is-vcentered is-full">
+        <figure>
+          <img src="static/images/camera_setting.jpg" alt="Custom setup" style="width:75%">
+          <figcaption>(a) General camera setting&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(b) Canonical camera setting  </figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+  <div class="columns is-centered has-text-centered">
+      <div class="column is-full-width">
+        <figure>
+          <img src="static/images/attention_comp.jpg" alt="Custom setup" style="width:75%">
+          <figcaption>&nbsp;&nbsp;&nbsp;&nbsp;
+                      (c) Dense MV attention&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      (d) Epipolar MV attention&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      (e) Row-wise MV attention
+          </figcaption>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;
+            O(<i>N<sup>2</sup>S<sup>4</sup></i>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            O(<i>N<sup>2</sup>S<sup>2</sup>K</i>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            O(<i>N<sup>2</sup>S<sup>3</sup></i>)
+         </p>
+        </figure>
+      </div>
+  </div>
+  <p> <b> Motivation.</b> 
+    We analyze different types of multiview attention layers. In a dense multiview attention layer <b>(c)</b>, all
+    feature vectors of multiview images are fed into an attention block. For a general camera setting
+    <b>(a)</b> with arbitrary viewpoints and intrinsics, utilizing epipolar constraint to construct an epipolar
+    attention <b>(d)</b> needs to correlate the features on the epipolar line. This means that we need to sample
+    <i>K</i> points along each epipolar line to compute such an attention layer. In our canonical camera setting
+    <b>(b)</b> with orthogonal cameras and viewpoints on an elevation of 0<sup>°</sup>, epipolar lines align with the
+    row of the images across different views <b>(e)</b>, which eliminates the need to resample epipolar line
+    to compute epipolar attention. We assume the latent feature map has a resolution of <i>H &times; W</i> and
+    <i>H = W = S</i>. In such a <i>N</i>-view camera system, row-wise attention reduces the computational
+    complexity to O(<i>N<sup>2</sup>S<sup>3</sup></i>). -->
+
+  </section>
+
+
+
+    <section class="section">
+      <!-- results -->
+      <div class="container is-max-desktop">
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-full-width">
+            <div class="column">
+              <h2 class="title is-5">Sparse-view Reconstruction
+              </h2>
+            </div>
+            
+           
+            <div class="column pb-0 mb-0 is-full-width">
+              <div class="video-container">
+                <video id="teaser" autoplay muted loop playsinline height="100%">
+                  <source src="static/mv_full/4d22f24ee55b4adbac91b2a66a2d72eb_final.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+
+            <div class="column pb-0 mb-0 is-full-width">
+              <div class="video-container">
+                <video id="teaser" autoplay muted loop playsinline height="100%">
+                  <source src="static/mv_full/10e8793d49294dbf958872a6f104c240_final.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+
+            <div class="column pb-0 mb-0 is-full-width">
+              <div class="video-container">
+                <video id="teaser" autoplay muted loop playsinline height="100%">
+                  <source src="static/mv_full/c4b840906b054f589f9f3b79b4d2401d_final.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+
+            <div class="column pb-0 mb-0 is-full-width">
+              <div class="video-container">
+                <video id="teaser" autoplay muted loop playsinline height="100%">
+                  <source src="static/mv_full/c4c8eb2f231447009230db56835f76a7_final.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+
+            <div class="column pb-0 mb-0 is-full-width">
+              <div class="video-container">
+                <video id="teaser" autoplay muted loop playsinline height="100%">
+                  <source src="static/mv_full/c4c1772e9138472697f948bd520b2114_final.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+
+            <div class="column pb-0 mb-0 is-full-width">
+              <div class="video-container">
+                <video id="teaser" autoplay muted loop playsinline height="100%">
+                  <source src="static/mv_full/ebddb922a7894f7f9a03ac01815e3b2e_final.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+
+            <div class="column pb-0 mb-0 is-full-width">
+              <div class="video-container">
+                <video id="teaser" autoplay muted loop playsinline height="100%">
+                  <source src="static/mv_gallery.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+       
+          
+
+      <section class="section">
+        <!-- results -->
+        <div class="container is-max-desktop">
+          <div class="columns is-centered has-text-centered">
+            <div class="column is-full-width">
+              <div class="column">
+                <h2 class="title is-5">Single-image to 3D
+                </h2>
+              </div>
+
+              <div class="column pb-0 mb-0 is-full-width">
+                <div class="video-container">
+                  <video id="teaser" autoplay muted loop playsinline height="100%">
+                    <source src="static/single_full/2ca52d750d95471a953fb2c9eb577da6_final.mp4" type="video/mp4">
+                  </video>
+                </div>
+              </div>
+  
+              <div class="column pb-0 mb-0 is-full-width">
+                <div class="video-container">
+                  <video id="teaser" autoplay muted loop playsinline height="100%">
+                    <source src="static/single_full/2cd51b1262d14a80b7320df1f740687a_final.mp4" type="video/mp4">
+                  </video>
+                </div>
+              </div>
+  
+              <div class="column pb-0 mb-0 is-full-width">
+                <div class="video-container">
+                  <video id="teaser" autoplay muted loop playsinline height="100%">
+                    <source src="static/single_full/8dbd18bc6c144d04ae89190f1c857c81_final.mp4" type="video/mp4">
+                  </video>
+                </div>
+              </div>
+  
+              <div class="column pb-0 mb-0 is-full-width">
+                <div class="video-container">
+                  <video id="teaser" autoplay muted loop playsinline height="100%">
+                    <source src="static/single_full/10e836a1ef464011810be12f9c94324b_final.mp4" type="video/mp4">
+                  </video>
+                </div>
+              </div>
+
+              <div class="column pb-0 mb-0 is-full-width">
+                <div class="video-container">
+                  <video id="teaser" autoplay muted loop playsinline height="100%">
+                    <source src="static/single_gallery.mp4" type="video/mp4">
+                  </video>
+                </div>
+              </div>
+
+        </section>
+
+      <!-- <section class="section">
+          <div class="container is-max-desktop">
+            <div class="columns is-centered has-text-centered">
+              <div class="column is-full-width">
+                <div class="column">
+                  <h2 class="title is-5">Convergence Speed
+                  </h2>
+                </div>
+          
+          <div class="container is-max-desktop">
+            <div class="columns is-centered has-text-centered">
+              <div class="column is-full-width">
+                <div class="column">
+                  <img src="static/images/convergence.jpg" alt="teaser" style="width:100%">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="container is-max-desktop">
+            <div class="columns is-centered has-text-centered">
+              <div class="column is-full-width">
+                <div class="column">
+                  <img src="static/images/psnr_curve.png" alt="teaser" style="width:100%">
+
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="container is-max-desktop">
+            <div class="columns is-centered has-text-centered">
+              <div class="column is-four-fifths">
+                <div class="content has-text-justified">
+                  <p>
+                    Visualization of intermediate results during training process. Compared with existing LRM-based approaches, like Instant3D, our proposed GCA and GaPE remarkably reduce the convergence time and improve the reconstruction quality by a large margin.
+                  </p><br>
+                </div>
+              </div>
+            </div>
+          </div>
+                
+  
+          </section>
+
+          <section class="section">
+            <div class="container is-max-desktop">
+              <div class="columns is-centered has-text-centered">
+                <div class="column is-full-width">
+                  <div class="column">
+                    <h2 class="title is-5">Details of Model Design
+                    </h2>
+                  </div>
+            
+                <div class="container is-max-desktop">
+                  <div class="columns is-centered has-text-centered">
+                    <div class="column is-full-width">
+                      <div class="column">
+                        <img src="static/images/hyperparams_v2.jpg" alt="teaser" style="width:100%">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="container is-max-desktop">
+                  <div class="columns is-centered has-text-centered">
+                    <div class="column is-four-fifths">
+                      <div class="content has-text-justified">
+                        <p>
+                          The details and hyper-parameters of our model design. We compare the amount of training data, the input and output settings, and the models' hyper-parameters of our proposed two model variants.
+                        </p><br>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+  
+            </section> -->
+
+            <section class="section">
+              <div class="container is-max-desktop">
+                <!-- Concurrent Work. -->
+                <div class="columns is-centered">
+                  <div class="column is-full-width">
+                    <h2 class="title is-3">Acknowledgement</h2>
+            
+                    <div class="content has-text-justified">
+                      <p>
+                        This work is mainly supported by Hong Kong Generative AI Research & Development Center (HKGAI) led by Prof. Yike Guo. We are grateful for the necessary GPU resources provided by Hong Kong University of Science and Technology (HKUST).
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <!--/ Concurrent Work. -->
+              </div>
+            </section>
+
+<section class="section" id="BibTeX">
+          <div class="container is-max-desktop content">
+            <h2 class="title">BibTeX</h2>
+
+    <pre style="background-color:#e9eeef;padding: 1.25em 1.5em">
+<code>@article{li2024m,   
+  title={M-LRM: Multi-view Large Reconstruction Model},
+  author={Li, Mengfei and Long, Xiaoxiao and Liang, Yixun and Li, Weiyu and Liu, Yuan and Li, Peng and Chi, Xiaowei and Qi, Xingqun and Xue, Wei and Luo, Wenhan and others},
+  journal={arXiv preprint arXiv:2406.07648},
+  year={2024}
+}</code></pre> 
+        </div>
+        </section>
+
+              
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            We thank the <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a> team for providing this
+            amazing website template.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+</body>
+</html>
